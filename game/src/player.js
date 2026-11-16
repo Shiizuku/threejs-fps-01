@@ -2,7 +2,7 @@
 // reloading, weapon slots and grenades, all writing into the same fighter
 // record the bots use.
 
-import { BOT, PLAYER } from './config.js';
+import { PLAYER } from './config.js';
 import { collide } from './physics.js';
 import { currentWeapon } from './state.js';
 import { startReload, throwGrenade, tryFire } from './weapons.js';
@@ -49,7 +49,7 @@ export function makePlayerControl(input, pressed, rng) {
     f.moving = len > 0;
     if (len > 0) {
       const walk = keys.has('ShiftLeft') || keys.has('ShiftRight');
-      const speed = f.crouch ? BOT.walkSpeed * 0.6 : walk ? BOT.walkSpeed : PLAYER.speed;
+      const speed = f.crouch ? PLAYER.crouchSpeed : walk ? PLAYER.walkSpeed : PLAYER.runSpeed;
       const [nx, nz] = collide(
         f.x + (mx / len) * speed * dt,
         f.z + (mz / len) * speed * dt,
