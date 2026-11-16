@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sable Station — a three.js tactical FPS</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #0d1622; }
+  #game { position: fixed; inset: 0; display: block; }
+  .hud { position: fixed; inset: 0; pointer-events: none; font-family: "Segoe UI", system-ui, sans-serif; color: #eef4fa; }
+  #crosshair { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 18px; opacity: .85; text-shadow: 0 0 4px #000; }
+  #hitmarker { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 22px; color: #ffd75e; opacity: 0; }
+  #topbar { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); text-align: center; }
+  #timer { font-size: 30px; font-weight: 700; text-shadow: 0 1px 4px #000; }
+  #score { font-size: 15px; letter-spacing: .12em; }
+  #score .atk { color: #ffab7a; } #score .def { color: #9adcff; }
+  #phase { font-size: 12px; letter-spacing: .2em; opacity: .85; text-transform: uppercase; }
+  #vitals { position: absolute; left: 18px; bottom: 16px; }
+  #health { font-size: 34px; font-weight: 700; text-shadow: 0 1px 4px #000; }
+  #armor { font-size: 14px; opacity: .9; }
+  #money { font-size: 20px; color: #ffe08a; font-weight: 600; }
+  #ammoBox { position: absolute; right: 18px; bottom: 16px; text-align: right; }
+  #ammo { font-size: 34px; font-weight: 700; text-shadow: 0 1px 4px #000; }
+  #weaponName { font-size: 14px; letter-spacing: .08em; }
+  #nades { font-size: 13px; opacity: .9; }
+  #feed { position: absolute; right: 16px; top: 12px; text-align: right; font-size: 13px; line-height: 1.5; text-shadow: 0 1px 3px #000; }
+  #banner { position: absolute; left: 50%; top: 26%; transform: translateX(-50%); text-align: center; }
+  #bannerTitle { font-size: 40px; font-weight: 800; letter-spacing: .06em; text-shadow: 0 2px 10px #000; }
+  #bannerSub { font-size: 16px; opacity: .92; text-shadow: 0 1px 4px #000; }
+  #progress { position: absolute; left: 50%; top: 58%; transform: translateX(-50%); width: 280px; display: none; }
+  #progressLabel { text-align: center; font-size: 13px; letter-spacing: .15em; margin-bottom: 5px; text-shadow: 0 1px 3px #000; }
+  #progressBarOuter { height: 8px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.4); }
+  #progressBar { height: 100%; width: 0%; background: #ffd75e; }
+  #buyMenu { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); background: rgba(10, 18, 28, .82); border: 1px solid rgba(255,255,255,.25); padding: 12px 16px; min-width: 250px; display: none; }
+  #buyMenu h3 { margin: 0 0 8px; font-size: 14px; letter-spacing: .2em; color: #ffe08a; }
+  #buyMenu .row { display: flex; justify-content: space-between; font-size: 14px; padding: 2px 0; }
+  #buyMenu .row .key { color: #9adcff; margin-right: 8px; }
+  #buyMenu .row.cant { opacity: .38; }
+  #buyMenu .row.owned { color: #9fe8a8; }
+  #vignette { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(200, 30, 30, .55) 100%); opacity: 0; }
+  #blind { position: fixed; inset: 0; pointer-events: none; background: #fff; opacity: 0; }
+  #scope { position: fixed; inset: 0; pointer-events: none; display: none; background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,.92) 31%); }
+  #startScreen { position: fixed; inset: 0; background: rgba(8, 14, 22, .78); display: flex; align-items: center; justify-content: center; pointer-events: auto; }
+  #startCard { max-width: 560px; text-align: center; padding: 28px 34px; background: rgba(13, 22, 34, .92); border: 1px solid rgba(255,255,255,.22); }
+  #startCard h1 { margin: 0 0 4px; font-size: 38px; letter-spacing: .1em; color: #eaf6ff; }
+  #startCard h2 { margin: 0 0 14px; font-size: 15px; font-weight: 400; letter-spacing: .28em; color: #57c8ff; text-transform: uppercase; }
+  #startCard p { font-size: 14px; line-height: 1.55; color: #c9d8e4; }
+  #startCard .keys { font-size: 13px; color: #9fb4c4; line-height: 1.7; }
+  #startCard button { margin-top: 16px; font-size: 17px; padding: 10px 34px; background: #ff7a33; color: #14100c; border: 0; font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.min.js" } }
+</script>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div class="hud">
+  <div id="crosshair">+</div>
+  <div id="hitmarker">✕</div>
+  <div id="topbar">
+    <div id="timer">0:00</div>
+    <div id="score"><span class="atk">JACKALS 0</span> · <span class="def">0 SENTINELS</span></div>
+    <div id="phase">BUY PHASE</div>
+  </div>
+  <div id="feed"></div>
+  <div id="vitals">
+    <div id="money">$800</div>
+    <div id="health">100</div>
+    <div id="armor"></div>
+  </div>
+  <div id="ammoBox">
+    <div id="nades"></div>
+    <div id="weaponName">Pika P2</div>
+    <div id="ammo">12 / 48</div>
+  </div>
+  <div id="banner"><div id="bannerTitle"></div><div id="bannerSub"></div></div>
+  <div id="progress"><div id="progressLabel"></div><div id="progressBarOuter"><div id="progressBar"></div></div></div>
+  <div id="buyMenu"><h3>BUY — SABLE STATION</h3><div id="buyRows"></div></div>
+</div>
+<div id="vignette"></div>
+<div id="blind"></div>
+<div id="scope"></div>
+<div id="startScreen">
+  <div id="startCard">
+    <h1>SABLE STATION</h1>
+    <h2>Jackals vs Sentinels</h2>
+    <p>A polar research station at blue hour. You lead the <b style="color:#ffab7a">Jackals</b>: plant the core charge in the Reactor Hall or the Array Yard, or wipe out the <b style="color:#9adcff">Sentinels</b>. First team to 7 rounds wins the station.</p>
+    <p class="keys">WASD move · Mouse aim · Click fire · Shift walk · C crouch<br>
+    1/2/3 weapons · 4 frag charge · 5 flare blind · R reload · M mute<br>
+    Buy at round start with the number keys while the buy menu is open.</p>
+    <button id="playBtn">DEPLOY</button>
+  </div>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

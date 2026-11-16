@@ -2,7 +2,8 @@
 // Pure data plus small helpers; sim.js drives the phases, bot.js and
 // player.js move the fighters, hud.js reads it all back out.
 
-import { ECONOMY, MATCH, SPAWNS, WEAPONS } from './config.js';
+import { ECONOMY, MATCH, WEAPONS } from './config.js';
+import { SPAWNS } from './map.js';
 
 let nextId = 1;
 

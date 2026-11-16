@@ -42,11 +42,13 @@ export const BOXES = [
   { x1: -6, z1: -30.4, x2: 4, z2: -30, h: 3, kind: 'glass' },
   { x1: -6, z1: 18, x2: -2, z2: 18.4, h: 3, kind: 'glass' },
   { x1: 0, z1: 18, x2: 4, z2: 18.4, h: 3, kind: 'glass' },
-  // Planters inside (low cover)
-  { x1: -4.4, z1: -24, x2: -2.4, z2: -12, h: 1.0, kind: 'planter' },
-  { x1: 0.4, z1: -24, x2: 2.4, z2: -12, h: 1.0, kind: 'planter' },
-  { x1: -4.4, z1: -4, x2: -2.4, z2: 8, h: 1.0, kind: 'planter' },
-  { x1: 0.4, z1: -4, x2: 2.4, z2: 8, h: 1.0, kind: 'planter' },
+  // Planters inside (low cover), split so the door lanes stay walkable
+  { x1: -4.4, z1: -24, x2: -2.4, z2: -19, h: 1.0, kind: 'planter' },
+  { x1: 0.4, z1: -24, x2: 2.4, z2: -19, h: 1.0, kind: 'planter' },
+  { x1: -4.4, z1: -12, x2: -2.4, z2: -1.5, h: 1.0, kind: 'planter' },
+  { x1: 0.4, z1: -12, x2: 2.4, z2: -1.5, h: 1.0, kind: 'planter' },
+  { x1: -4.4, z1: 1.5, x2: -2.4, z2: 8, h: 1.0, kind: 'planter' },
+  { x1: 0.4, z1: 1.5, x2: 2.4, z2: 8, h: 1.0, kind: 'planter' },
 
   // Comms hut (site B): x 38..48, z -16..-8
   { x1: 38, z1: -16.3, x2: 48, z2: -16, h: 3, kind: 'wall' },
@@ -56,7 +58,9 @@ export const BOXES = [
   { x1: 37.7, z1: -11, x2: 38, z2: -8, h: 3, kind: 'wall' },
   { x1: 44, z1: -14, x2: 46, z2: -12, h: 1.2, kind: 'crate' },
 
-  // North cabins
+  // North cabins (solid interiors: pure cover, nobody fights inside them)
+  { x1: -29.7, z1: -45.7, x2: -18.3, z2: -38.3, h: 3, kind: 'wall' },
+  { x1: 6.3, z1: -45.7, x2: 17.7, z2: -38.3, h: 3, kind: 'wall' },
   { x1: -30, z1: -46.3, x2: -18, z2: -46, h: 3, kind: 'wall' },
   { x1: -30.3, z1: -46, x2: -30, z2: -38, h: 3, kind: 'wall' },
   { x1: -18, z1: -46, x2: -17.7, z2: -38, h: 3, kind: 'wall' },
@@ -82,13 +86,13 @@ export const BOXES = [
   { x1: 20, z1: 17, x2: 28, z2: 19, h: 1.05, kind: 'snow' },
 
   // Crate clusters on the lanes
-  { x1: -15, z1: -3, x2: -13, z2: -1, h: 1.2, kind: 'crate' },
+  { x1: -12.5, z1: -5, x2: -10.5, z2: -3, h: 1.2, kind: 'crate' },
   { x1: -19, z1: -21, x2: -17, z2: -19, h: 2.3, kind: 'crate' },
   { x1: 13, z1: -1, x2: 15, z2: 1, h: 1.2, kind: 'crate' },
   { x1: -1, z1: 25, x2: 1, z2: 27, h: 2.3, kind: 'crate' },
   { x1: 29, z1: 33, x2: 31, z2: 35, h: 1.2, kind: 'crate' },
   { x1: 33, z1: 29, x2: 35, z2: 31, h: 2.3, kind: 'crate' },
-  { x1: -41, z1: 19, x2: -39, z2: 21, h: 1.2, kind: 'crate' },
+  { x1: -37, z1: 19, x2: -35, z2: 21, h: 1.2, kind: 'crate' },
   { x1: 19, z1: -35, x2: 21, z2: -33, h: 1.2, kind: 'crate' },
 ];
 
@@ -96,7 +100,7 @@ export const CIRCLES = [
   { x: -35, z: -20, r: 3.4, h: 5, kind: 'reactor' },
   { x: 30, z: -6, r: 2.6, h: 3, kind: 'dish' },
   { x: 40, z: 4, r: 2.6, h: 3, kind: 'dish' },
-  { x: 28, z: 10, r: 2.6, h: 3, kind: 'dish' },
+  { x: 24, z: 6, r: 2.6, h: 3, kind: 'dish' },
   { x: 24, z: -12, r: 1.8, h: 2.6, kind: 'tank' },
   { x: 44, z: -2, r: 1.8, h: 2.6, kind: 'tank' },
   { x: 28, z: 38, r: 1.8, h: 2.6, kind: 'tank' },
@@ -124,19 +128,18 @@ export const SPAWNS = {
 // the wall segments above).
 export const NODES = [
   [-34, 40], [-40, 24], [-40, 4], [-30, -3], [-30, -10], [-43, -24],
-  [-38, -16], [-40, -30], [-19, -26], [-25, -26], [-19, -12], [-25, -12],
-  [-14, -2], [-1, 22], [-1, 12], [-1, 0], [-1, -16], [-12, -24],
-  [8, -7], [0, -38], [-24, -35], [-34, -40], [12, -35], [24, -30],
+  [-39, -15], [-40, -30], [-19, -26], [-25, -26], [-19, -12], [-25, -12],
+  [-14, -2], [-1, 22], [-1, 12], [-1, 0], [-1, -16], [-12, -24],  [8, -7], [0, -38], [-24, -35], [-34, -40], [12, -35], [24, -30],
   [38, -33], [30, -20], [27, -10], [34, 2], [26, 16], [14, 4],
   [8, 28], [32, 32], [-16, 36], [35, -12], [43, -12], [-9, -1],
-  [8, 0], [8, 13], [-1, -7],
+  [8, 0], [8, 13], [3.2, -7], [1.4, -15.5],
 ];
 
 export const EDGES = [
   [0, 1], [0, 32], [1, 2], [1, 32], [2, 3], [2, 12], [3, 4], [3, 12],
   [4, 6], [4, 11], [6, 5], [6, 7], [5, 7], [7, 9], [9, 8], [8, 10],
   [8, 19], [10, 11], [10, 12], [12, 35], [35, 15], [13, 14], [14, 15],
-  [15, 16], [15, 36], [16, 17], [16, 38], [38, 18], [17, 19], [19, 20],
+  [15, 16], [15, 36], [16, 17], [16, 39], [39, 38], [38, 18], [17, 19], [19, 20],
   [19, 22], [20, 21], [22, 23], [23, 24], [24, 25], [25, 26], [25, 33],
   [26, 33], [27, 28], [27, 33], [28, 29], [28, 37], [29, 30],
   [29, 36], [30, 31], [30, 13], [31, 0], [33, 34], [37, 14],
@@ -307,15 +310,15 @@ export function buildWorld(THREE, scene) {
 
   // Aurora: two large translucent ribbons high over the station
   const auroraMatA = new THREE.MeshBasicMaterial({
-    color: PALETTE.auroraA, transparent: true, opacity: 0.16,
+    color: PALETTE.auroraA, transparent: true, opacity: 0.22,
     side: THREE.DoubleSide, depthWrite: false,
   });
   const auroraMatB = new THREE.MeshBasicMaterial({
-    color: PALETTE.auroraB, transparent: true, opacity: 0.1,
+    color: PALETTE.auroraB, transparent: true, opacity: 0.14,
     side: THREE.DoubleSide, depthWrite: false,
   });
   const ribbonA = new THREE.Mesh(new THREE.PlaneGeometry(190, 16, 48, 1), auroraMatA);
-  ribbonA.position.set(0, 46, -30);
+  ribbonA.position.set(0, 40, -24);
   ribbonA.rotation.x = 0.5;
   scene.add(ribbonA);
   const ribbonB = new THREE.Mesh(new THREE.PlaneGeometry(190, 10, 48, 1), auroraMatB);

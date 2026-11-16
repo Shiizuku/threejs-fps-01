@@ -15,7 +15,7 @@ export const MATCH = {
   buySeconds: 12,
   roundSeconds: 105,
   chargeSeconds: 40,
-  plantSeconds: 3.2,
+  plantSeconds: 3.6,
   defuseSeconds: 5,
   freezeSeconds: 1.2,
 };
@@ -83,9 +83,9 @@ export const ARMOR = {
 
 export const BOT = {
   count: 4, // per side, plus the player on atk
-  visionRange: 64,
+  visionRange: 40,
   visionCos: Math.cos((108 * Math.PI) / 180 / 2),
-  hearingRange: 30,
+  hearingRange: 22,
   reactionMin: 0.3,
   reactionMax: 0.66,
   burstPause: 0.34,

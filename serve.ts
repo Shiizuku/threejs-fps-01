@@ -21,8 +21,14 @@ const types = {
 createServer(async (req, res) => {
   try {
     const url = new URL(req.url ?? '/', 'http://localhost');
+    // Redirect the root to the game page so the document URL carries the
+    // /game/ prefix and the page's relative module paths resolve.
+    if (url.pathname === '/') {
+      res.writeHead(302, { location: '/game/index.html' + url.search });
+      res.end();
+      return;
+    }
     let path = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
-    if (path === '/' || path === '\\') path = '/game/index.html';
     const data = await readFile(join(root, path));
     res.writeHead(200, { 'content-type': types[extname(path)] ?? 'application/octet-stream' });
     res.end(data);
